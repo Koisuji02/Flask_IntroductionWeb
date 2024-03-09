@@ -1,0 +1,61 @@
+/* Importo OpenSans */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+
+/* per tutto il documento stesso font OpenSans */
+.total-page {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.testo-bordato {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.6rem;
+    line-height: 150%;
+    text-shadow: -1px 0 #000000, 0 1px #000000, 1px 0 #000000, 0 -1px #000000;
+  }
+
+.sottolineato {
+    text-decoration: underline;
+}
+
+.bottone-fisso {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    border-color: #000000;
+    border-radius: 10px;
+    color: #fff;
+}
+
+.under-nav {
+    margin-top: 5rem;
+}
+
+@media (max-width: 800px){
+    .single-con {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        margin-left: 0.8rem;
+        max-width: 47rem;
+    }
+}
+
+/* media query se schermo large */
+@media (min-width: 800px) {
+    .single-con {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+.aggiungi2 {
+    margin-left: 2rem;
+    max-width: 9rem;
+}
+.togli2{
+    max-width: 9rem;
+}
+
+.item1 {
+    color: red;
+}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Registrati{% endblock %}
+{% block signup_active %}active{% endblock %}
+
+{% block content %}
+<div class="row mt-5">
+    <div class="col-3"></div>
+    <div class="col-6 bg-light p-4 border rounded justify-content-center"">
+        <form action="/iscriviti" method="POST">
+
+            <!-- INPUT DI TIPO EMAIL -->
+            <div class="mb-3">
+                <label for="emailInput" class="form-label">Email</label>
+                <input type="email" class="form-control" name="nickname" id="emailInput" required>
+            </div>
+
+            <!-- INPUT DI TIPO PASSWORD -->
+            <div class="mb-4">
+                <label for="passwordInput" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" id="passwordInput" required minlength="8"
+                    maxlength="12">
+            </div>
+
+            <!-- SELEZIONA SE REGISTRARTI COME LOCATORE (che include anche cliente) O SOLO COME CLIENTE -->
+            <div class="mb-3">
+                <select name="locatore" class="form-select" aria-label="Locatore-Cliente select" required>
+                <option value="" disabled selected>-- Come ti registri? --</option>
+                <option value="loc">Locatore</option>
+                <option value="cli">Cliente</option>
+                </select>
+                <!-- TESTO DI SUGGERIMENTO PER CAMPO FORM DI SELECT LOCATORE-UTENTE -->
+                <small class="form-text text-muted">*Se scegli locatore, sarai anche cliente (ma se scegli solo cliente, non potrai fare da locatore).</small>
+            </div>
+
+            <button type="submit" class="btn btn-danger">Registrati</button>
+        </form>
+    </div>
+    <div class="col-3"></div>
+</div>
+{% endblock %}

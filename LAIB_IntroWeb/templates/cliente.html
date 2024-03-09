@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Spazio Cliente{% endblock %}
+{% block cliente_active %} active {% endblock %}
+{% block content %}
+<div class="legenda mx-auto row text-center mt-2">
+    <!--VERDE-->
+    <div class="col-2"></div>
+    <p class="col-3 text-success">►Accettata</p>
+    <!--ROSSO-->
+    <p class="col-2 text-danger">►Rifiutata</p>
+    <!--GRIGIO-->
+    <p class="col-3 text-secondary">►In lavorazione</p>
+    <div class="col-2"></div>
+</div>
+<h3 class="mt-2 sottolineato"><strong>Richieste:</strong></h3>
+<div class="row justify-content-center">
+    {% for booking in bookings %}
+    <!-- 3 cards per riga, che cliccate rimandano al singolo annuncio della prenotazione -->
+    <div class="col-6 mb-3 text-center">
+        <a href="{{ url_for('single', id=booking.id_annuncio) }}" class="btn">
+            <div class="card border border-2 border-dark rounded text-center {% if booking.stato == 'T' %}text-white bg-success{% elif booking.stato == 'F' %}text-white bg-danger {% elif booking.stato == '?' %}text-white bg-secondary {% endif %}">
+                <div class="card-header border-bottom border-dark border-1"><strong>{{booking.titolo}}</strong></div>
+                <div class="card-body row">
+                    <h6 class="card-title col-12">{{booking.indirizzo}}</h6>
+                    <h6 class="card-title col-12">{{booking.nickname}}</h6>
+                    <h6 class="card-title col-6 text-center text-white"><strong>Data: </strong>{{booking.data}}</h6>
+                    <h6 class="card-title col-6 text-center text-white"><strong>Ora: </strong>{{booking.slot_ora}}</h6>
+                    {% if booking.stato == 'F' %}
+                    <h6 class="card-title text-center border-bottom border-2"></h6>
+                    <h6 class="card-title text-center"><strong>Motivo del rifiuto:</strong></h6>
+                    <h6 class="card-title text-center"><i>{{booking.motivo}}</i></h6>{% endif %}
+                </div>
+            </div>
+        </a>
+    </div>
+    {% if loop.index % 2 == 0 %} {# Chiudi la riga dopo ogni seconda card #}
+        </div><div class="row justify-content-center">
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

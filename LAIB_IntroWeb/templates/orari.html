@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Annuncio:{{id_annuncio}}{% endblock %}
+{% block content %}
+          <!-- FORM con azione = /prenotazioni/new/orari/id -->
+          <form action="{{url_for('new_booking', id_annuncio=id_annuncio, data_f=data)}}" method="POST">
+            <div class="modal-body">
+
+                <p class="mb-3">Data:<i> {{data}}</i></p>
+
+                <!-- ORA DI VISITA (GESTIONE A POSTERIORI) -->
+                <div class="mb-3">
+                    <select name="slot_ora" class="form-select form-select-sm" aria-label="Small select slot orario" required>
+                    <option value="" disabled selected>--Orario di visita--</option>
+                    {% for slot in orari%}
+                    {% if slot != '0' %}
+                      <option value="{{slot}}">{{slot}}</option>
+                    {% endif %}
+                    {% endfor %}
+                    </select>
+                </div>
+
+                <!-- TIPO DI VISITA -->
+                <div class="mb-3">
+                    <select name="tipo" class="form-select form-select-sm" aria-label="Small select tipo visita" required>
+                    <option value="" disabled selected>--Tipo di visita--</option>
+                    <!-- P = persona, R = remoto nel mio db -->
+                    <option value="P">Di Persona</option>
+                    <option value="R">Da Remoto</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+              <a href="{{url_for('single', id=id_annuncio)}}" class="btn btn-secondary border border-2 border-dark rounded">Annulla</a>
+              <button type="submit" class="btn btn-danger border border-2 border-dark rounded">Richiedi prenotazione</button>
+            </div>
+          </form>
+{% endblock %}

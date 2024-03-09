@@ -1,0 +1,118 @@
+<!-- TODO LOCATORE E GESTIONE DI ACCETTA E RIFIUTA -->
+{% extends "base.html" %}
+{% block title %}Spazio Locatore{% endblock %}
+{% block locatore_active %} active {% endblock %}
+
+<!-- 2 BOTTONI NELLA PAGINA DEL LOCATORE PER SELEZIONARE SE VUOLE VEDERE GLI ANNUNCI O LE PRENOTAZIONI -->
+{% block sidebar %}
+<div class="row mt-2 text-center">
+  <div class="col-3"></div>
+  <div class="col-3">
+    <a href="{{url_for('locatore')}}" class="btn btn-danger border border-2 border-dark rounded">Annunci Pubblicati</a>
+  </div>
+  <div class="col-3">
+    <a href="{{url_for('locatore', flag=1)}}" class="btn btn-danger border border-2 border-dark rounded">Vedi Prenotazioni</a>
+  </div>
+  <div class="col-3"></div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- SE VOGLIO VEDERE GLI ANNUNCI-->
+{% if not flag %}
+<h3 class="mt-2 sottolineato"><strong>Annunci:</strong></h3>
+{% for annuncio in annunci %}
+  <article class="articolo mt-3 border border-2 border-dark rounded">
+    <!-- ANNUNCIO TITOLO -->
+    <h4 class="annuncio-titolo text-white text-center border-bottom border-2 border-dark bg-danger mb-0"><strong>{{annuncio.titolo}}</strong></h4>
+    <div class="row">
+    <!-- link all'annuncio singolo sull'immagine -->
+    <a href="{{url_for('single', id=annuncio.id)}}" class="col-lg-3 col-md-6 col-12" title="annuncio_{{annuncio.id}}"><img class="annuncio-img img-fluid" src="{{annuncio.immagine_1}}" alt="annuncio-img"></a>
+      <div class="col-lg-9 col-md-6 col-12 mt-2 mb-4 d-flex flex-column justify-content-between">
+        <h6 class="annuncio-indirizzo text-center"><strong>{{annuncio.indirizzo}}</strong></h6>
+        <h6 class="annuncio-tipo_casa text-center">Tipo di casa: <strong>{{annuncio.tipo}}</strong></h6>
+        <h6 class="annuncio-locali text-center">Numero di locali: <strong>{{annuncio.locali}}</strong></h6>
+        <h6 class="annuncio-prezzo text-center">Prezzo mensile: <strong>{{annuncio.prezzo}}€</strong></h6>
+        <h6 class="annuncio-arredato text-center">Arredata: <strong>{{annuncio.arredato}}</strong></h6>
+      </div>
+    </div>
+  </article>
+{% endfor %}
+
+  <!-- SE VOGLIO VEDERE LE PRENOTAZIONI -->
+{% else %}
+<div class="legenda mx-auto row text-center mt-4">
+  <!--VERDE-->
+  <div class="col-2"></div>
+  <p class="col-3 text-success">►Accettata</p>
+  <!--ROSSO-->
+  <p class="col-2 text-danger">►Rifiutata</p>
+  <!--GRIGIO-->
+  <p class="col-3 text-secondary">►In lavorazione</p>
+  <div class="col-2"></div>
+</div>
+<h3 class="mt-2 sottolineato"><strong>Richieste:</strong></h3>
+<div class="row justify-content-center">
+{% for element in bookings %}
+{% for booking in element %}
+<div class="col-6 mb-3 text-center">
+    <a href="{{ url_for('single', id=booking.id_annuncio) }}" class="btn">
+        <div class="card border border-2 border-dark rounded {% if booking.stato == 'T' %}text-white bg-success{% elif booking.stato == 'F' %}text-white bg-danger {% elif booking.stato == '?' %}text-white bg-secondary {% endif %}">
+            <div class="card-header text-white"><strong>{{booking.titolo}}</strong></div>
+            <div class="card-body row">
+                <h6 class="card-title text-white col-12">{{booking.indirizzo}}</h6>
+                <h6 class="card-title text-white col-12">{{booking.nickname}}</h6>
+                <h6 class="card-title col-12 text-center text-white"><strong>Data: </strong>{{booking.data}}</h6>
+                <h6 class="card-title col-12 text-center text-white"><strong>Ora: </strong>{{booking.slot_ora}}</h6>
+                {% if booking.stato == 'F' %}
+                    <h6 class="card-title text-center border-bottom border-2"></h6>
+                    <h6 class="card-title text-center"><strong>Motivo del rifiuto:</strong></h6>
+                  <h6 class="card-title text-center"><i>{{booking.motivo}}</i></h6>
+                  {% endif %}
+                {% if booking.stato == '?' %}
+                <div class="col-12 row">
+                    <!-- BOTTONE ACCETTA RICHIESTA -->
+                    <a href="{{url_for('locatore_accetta', id_utente=booking.id_utente, id_annuncio=booking.id_annuncio)}}" class="col-6 btn btn-dark text-white text-center border border-2 border-dark rounded aggiungi2">Accetta</a>
+                    <!-- BOTTONE RIFIUTA RICHIESTA -->
+                    <button type="button" id="btn-foot" class="col-6 btn btn-light  text-dark text-center border border-2 border-dark rounded togli2" data-bs-toggle="modal" data-bs-target="#createModal">Rifiuta</button>
+
+                    <div class="modal fade" id="createModal" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1 class="modal-title fs-5 text-dark">Rifiuta</h1>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <!-- FORM con azione = /annunci/new -->
+                            <form action="{{url_for('locatore_rifiuta', id_utente=booking.id_utente, id_annuncio=booking.id_annuncio)}}" method="POST">
+                              <div class="modal-body">
+                                <div class="mb-3">
+                                  <label for="motivo" class="form-label text-dark">Motivo del rifiuto:</label>
+                                  <textarea id="motivo" class="form-control form_field" required  name="motivo" placeholder="Motivo" maxlength="100"></textarea>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                <button type="submit" class="btn btn-danger">Invia annuncio</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+                {% endif %}
+                
+            </div>
+        </div>
+    </a>
+</div>
+{% if loop.index % 2 == 0 %} {# Chiudi la riga dopo ogni terza card #}
+    </div><div class="row justify-content-center">
+{% endif %}
+{% endfor %}
+{% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,13 @@
+UTENTI
+- locatore1:
+username: locatore1@gmail.com
+password: locatore1
+- locatore2:
+username: locatore2@gmail.com
+password: locatore2
+- cliente1:
+username: cliente1@gmail.com
+password: cliente1
+- cliente2:
+username: cliente2@gmail.com
+password: cliente2

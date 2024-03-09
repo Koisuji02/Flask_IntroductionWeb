@@ -1,0 +1,44 @@
+.post-img {
+    width: 25%;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    background-color: aliceblue;
+}
+
+header > div {
+    flex: 2;        /* Riduce la distanza tra il titolo e il div e nav (strethcando)*/
+    padding-left: 1rem;
+}
+
+header > nav {
+    flex: 1;        /* Il flex = 1 fa da riferimento per il flex sopra (il doppio) */
+}
+
+.container {
+    display: flex;
+    flex-direction: row-reverse;    /* Per mettere aside a sinistra*/
+}
+
+main {
+    flex: 3;
+}
+
+aside {
+    flex: 1;
+    background-color: rgb(231, 231, 231);   /* Altro modo per definire i colori */
+    /*background-color: #E7E7E7*/
+}
+
+/* Ora cerchiamo di renderlo responsive */
+@media screen and (max-width: 600px) {
+    .container {
+        flex-direction: column; /* alternativa: display: block; */
+    }
+
+    aside {
+        display: none; /* fa scomparire la barra laterale se ristretto */
+    }
+}

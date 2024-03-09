@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% block title %}Annuncio:{{annuncio.id}}{% endblock %}
+{% block content %}
+<!-- Script per il carosello di immagini -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Inizializza il carosello
+    $('#carosello').carousel({
+      // tolgo lo scorrimento automatico del carosello
+      interval:false
+    });
+
+    // Aggiungi l'evento di clic per visualizzare l'immagine corrente nel carosello
+    const immagineCorrente = document.getElementById('immagineCorrente');
+    const immaginiPreview = document.querySelectorAll('.img_p');
+
+    immaginiPreview.forEach(function (img_p) {
+      img_p.addEventListener('click', function () {
+        const indiceNuovo = this.getAttribute('indice');
+        immagineCorrente.src = "{{annuncio['immagine_' + indiceNuovo|string]}}";
+      });
+    });
+  });
+</script>
+
+    <article class="row mt-2">
+      
+      {% if current_user.id == annuncio.id_locatore%}
+      <!-- bottone che apre il modale -->
+      <div class="col-4"></div>
+      <div class="col-4 text-center">
+        <button type="button" id="btn-foot" class="btn btn-danger border border-2 border-dark rounded aggiungi" data-bs-toggle="modal" data-bs-target="#createModal">Modifica annuncio</button>
+
+        <!-- form per inserire nuovo annuncio (solo per locatori) -->
+        <div class="modal fade" id="createModal" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5">Modifica annuncio</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <!-- FORM con azione = /annunci/new -->
+              <form action="{{url_for('modifica_annuncio', id_annuncio=annuncio.id)}}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+        
+                  <div class="mb-3">
+                    <label for="titolo" class="form-label">Titolo</label>
+                    <textarea id="titolo" class="form-control form_field"  name="titolo" placeholder="Titolo" required></textarea>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <select name="tipo" class="form-select form-select-sm" aria-label="Small select tipo casa" required>
+                      <option value="" disabled selected>--Tipo di abitazione--</option>
+                      <option value="Casa Indipendente">Casa indipendente</option>
+                      <option value="Appartamento">Appartamento</option>
+                      <option value="Loft">Loft</option>
+                      <option value="Villa">Villa</option>
+                    </select>
+                  </div>
+        
+                  <div class="mb-3">
+                    <select name="locali" class="form-select form-select-sm" aria-label="Small select locali" required>
+                      <option value="" disabled selected>--Numero di locali--</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5+">5+</option>
+                    </select>
+                  </div>
+        
+                  <div class="mb-3">
+                    <label for="descrizione" class="form-label">Descrizione</label>
+                    <textarea id="descrizione" class="form-control form_field"  name="descrizione" placeholder="Descrizione" maxlength="400" required></textarea>
+                  </div>
+        
+                  <div class="mb-3">
+                    <label for="prezzo">Prezzo</label>
+                    <input type="number" id="prezzo" name="prezzo" placeholder="Prezzo(€)" min="0" required>
+                  </div>
+        
+                  <p>L'abitazione è arredata?</p>
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-danger">
+                      <input type="radio" name="arredato" value="SI" autocomplete="off" required> Si
+                    </label>
+                    <label class="btn btn-danger">
+                      <input type="radio" name="arredato" value="NO" autocomplete="off"> No
+                    </label>
+                  </div>
+        
+                  <!-- DA 1 A 5 IMMAGINI -->
+                  <div class="mb-3">
+                    <label for="file_img" class="form-label">Aggiungi immagini (massimo 5 immagini, minimo 1):</label>
+                    <input type="file" class="form-control form_field" id="file_img" name="immagine_1" accept=".jpg, .jpeg, .png" required>
+                    <input type="file" class="form-control form_field" id="file_img" name="immagine_2" accept=".jpg, .jpeg, .png">
+                    <input type="file" class="form-control form_field" id="file_img" name="immagine_3" accept=".jpg, .jpeg, .png">
+                    <input type="file" class="form-control form_field" id="file_img" name="immagine_4" accept=".jpg, .jpeg, .png">
+                    <input type="file" class="form-control form_field" id="file_img" name="immagine_5" accept=".jpg, .jpeg, .png">
+                    <small class="form-text text-muted">Carica da 1 a 5 immagini. Formati supportati: JPG, JPEG, PNG.</small>
+                </div>
+                
+        
+                <p>La casa è disponibile?</p>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                  <label class="btn btn-danger">
+                    <input type="radio" name="disponibile" value="True" autocomplete="off" required> Si, è visibile a tutti
+                  </label>
+                  <label class="btn btn-danger">
+                    <input type="radio" name="disponibile" value="False" autocomplete="off"> No, visibile solo a me
+                  </label>
+                </div> 
+                  
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary border border-2 border-dark rounded" data-bs-dismiss="modal">Annulla</button>
+                  <button type="submit" class="btn btn-danger border border-2 border-dark rounded">Invia annuncio</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-4"></div>
+      {% endif %}
+      <div class="col-12 text-center mt-3 mb-2 border border-dark border-2 rounded text-center single-con bg-danger text-white">
+        <h2><strong class="text-white">{{annuncio.titolo}}</strong></h2>
+      </div>
+
+      <!-- Carosello di immagini -->
+      <div class="col-12 mt-2 mb-2 text-center">
+        <div id="carosello" class="carousel slide" data-ride="carousel">
+          <div class="carousel-inner">
+            {% for i in range(1, 6) %}
+              {% if annuncio['immagine_' + i|string] %}
+                <div class="carousel-item {% if i == 1 %}active{% endif %}" id="immagineCorrente">
+                  <img src="{{annuncio['immagine_' + i|string]}}" class="d-block w-100 img-fluid border border-2 border-dark rounded img_p">
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <a class="carousel-control-prev" href="#carosello" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon bg-danger border border-2 border-dark rounded" aria-hidden="true"></span>
+          </a>
+          <a class="carousel-control-next" href="#carosello" role="button" data-slide="next">
+            <span class="carousel-control-next-icon bg-danger border border-2 border-dark rounded" aria-hidden="true"></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="border border-dark border-2 rounded text-center single-con bg-danger text-white">
+      <div class="col-12 mt-2 mb-2">
+        <div class="row">
+          <div class="col-4 text-center">
+            <h5><strong>{{annuncio.indirizzo}}</strong></h5>
+          </div>
+          <div class="col-4"></div>
+          <div class="col-4 text-center">
+            <!-- ho aggiunto la possibilità di mandare la mail se clicco indirizzo email -->
+            <h6><a href="mailto:{{annuncio.nickname}}" class="text-white"><strong>{{annuncio.nickname}}</strong></a></h6>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 mt-2 mb-2">
+        <div class="row text-center">
+          <div class="col-md-3 col-12">
+            <h6 class="tipo-casa font-weight-bold"><strong>{{annuncio.tipo}}</strong></h6>
+          </div>
+          <div class="col-md-3 col-12 text-md-center">
+            <h6 class="arredato">Arredato: <strong>{{annuncio.arredato}}</strong></h6>
+          </div>
+          <div class="col-md-3 col-12 text-md-center">
+            <h6 class="numero-locali">Locali: <strong>{{annuncio.locali}}</strong></h6>
+          </div>
+          <div class="col-md-3 col-12 text-md-right">
+            <h6 class="prezzo"><strong>{{annuncio.prezzo}}</strong>€</h6>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-2"></div>
+        <p class="col-8 text-center"><i>{{annuncio.descrizione}}</i></p>
+        <div class="col-2"></div>
+      </div>
+
+    </article>
+    {% if current_user.is_authenticated %}
+    {% if current_user.id != annuncio.id_locatore and flag %}
+
+    <!-- GESTIONE PRENOTAZIONE VISITA -->
+    <!-- bOTTONE CHE APRE IL MODALE -->
+    <button type="button" id="btn-foot" class="btn btn-danger border border-2 border-white rounded bottone-fisso aggiungi" data-bs-toggle="modal" data-bs-target="#createModal">Prenota</button>
+
+    <!-- form per inserire nuovo annuncio (solo per locatori) -->
+    <div class="modal fade" id="createModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5">Nuova Prenotazione</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <!-- FORM con azione = /prenotazioni/new -->
+          <form action="{{url_for('new_booking_data', id_annuncio=annuncio.id)}}" method="POST">
+            <div class="modal-body">
+              
+              <!-- DATA DI VISITA (ENTRO 7 GIORNI DA OGGI, ALTRIMENTI GESTIONE A POSTERIORI) -->
+              <div class="mb-3">
+                <label for="inputDate">Seleziona una data entro 7 giorni da oggi:</label>
+                <input type="date" id="inputDate" name="data" required>
+              </div>
+
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary border border-2 border-dark rounded" data-bs-dismiss="modal">Annulla</button>
+              <button type="submit" class="btn btn-danger border border-2 border-dark rounded">Orari disponibili</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% endif %}
+{% endblock %}
